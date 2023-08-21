@@ -78,6 +78,12 @@ If `fast` is `true`, it means the dicom files are all located in the leaf nodes 
 
 Run the `main.py` and the program will start to work.
 
+## Embeddable Version
+
+1. download `TidyDicom.zip` and unzip it.
+2. modify `custom.py` and `config.json`.
+3. double click `run.bat`
+
 ## License 
 
 This project is licensed under the GPL 3.0 License
