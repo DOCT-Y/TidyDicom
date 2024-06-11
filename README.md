@@ -103,7 +103,9 @@ The `in_dir` is the root folder of your unsorted DICOM files. The `out_dir` is t
 ### Run
 
 Run the `main.py` and the program will start to work.
+
 The terminal will display the process bar batch by batch.
+
 When any error occurs, a 'failures.csv' will be stored in `out_dir` logging the filepath and error information.
 
 ## Embeddable Version
