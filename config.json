@@ -1,6 +1,6 @@
 {
-    "in_dir": "G:\\apt related\\bladder apt adc",
-    "out_dir": "C:\\Users\\AS\\Desktop\\dicom\\apt",
+    "in_dir": "C:\\Users\\input",
+    "out_dir": "C:\\Users\\output",
     "copy_or_cut": "copy", 
     "custom_file":"custom", 
     "batch_size":2000
