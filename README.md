@@ -17,7 +17,8 @@ The Windows version based on embeddable Python is uploaded. It can run without p
 The below modules must be installed first to make the TidyDicom work. 
 
 ```
-- pydicom=2.3.1
+- pydicom=2.4.3
+- tqdm=4.66.4
 ```
 
 ## Quick Start
@@ -31,14 +32,33 @@ Open the `custom.py` file:
 Firstly, we need to tell the program which DICOM data element to read to get the informations. 
 
 ```python
-INFO_DICT = {'pname':'PatientName', 'pid':'PatientID', 'date':(0x0008, 0x0020), 'series_description':(0x0008, 0x103E)}
+INFO_DICT = {
+    'PatientName':{
+        'standard_name':'PatientName', 
+        'default_value':'NoPatientNameTag'
+        },
+    'PatientID':{
+        'standard_name':'PatientID', 
+        'default_value':'NoPatientIDTag'
+        },
+    'StudyDate':{
+        'group_id':'0008', 
+        'element_id':'0020', 
+        'default_value':'NoStudyDateTag'
+        },
+    'SeriesDescription':{
+        'group_id':'0008', 
+        'element_id':'103E', 
+        'default_value':'NoSeriesDescriptionTag'
+        }
+    }
 ```
 
 We defined a Python dictionary in which the keyword is a string of anything and the value is used to get the tag information.
 
-Standard DICOM data elements can be accessed by string keyword like `PatientName` for  `(0010,0010) Patient's Name` and `PatientID` for `(0010,0020) | Patient ID` . It can also be accessed by group number and element number like `(0x0008, 0x0020)` for  `(0008,0020) Study Date` and `(0x0008, 0x103E)` for `(0008,103E) Series Description` . 
+Standard DICOM data elements can be accessed by standard keyword like `PatientName` for  `(0010,0010) Patient's Name` and `PatientID` for `(0010,0020) | Patient ID` . It can also be accessed by group number and element number like `group_id=0008, element_id=0020` for `(0008,0020) Study Date` and `group_id=0008, element_id=103E` for `(0008,103E) Series Description` . 
 
-Private DICOM data elements can only be accessed by group number and element number. For example, the b values of DWI images are usually private in DICOM files.
+Private DICOM data elements can only be accessed by group number and element number.
 
 A list of keywords for all standard elements can be found [here](https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html).
 
@@ -48,15 +68,19 @@ Secondly, we need to tell the program what is the rule to categorize the DICOM f
 
 ```python
 def GetPathByInfo(info:Dict[str, Any]) -> str:
-    pid = info['pid'] # no change
-    pname = str(info['pname']).upper() # convert PersonName to str
-    date = info['date'] # no change
-    series_name = info['series_name'] if info['series_name'] else 'Unk_Series' # fill nan
+    pid = info['PatientID'] # no change
 
-    return '/'.join([pid+'_'+pname, date, series_name])
+    pname = info['PatientName'].components # PearsonName object, return tuple
+    pname = ''.join(pname).lower().replace(' ', '')
+
+    date = info['StudyDate'] # no change
+
+    series_description = info['SeriesDescription'] # no change
+
+    return os.path.join(id+'_'+pname, date, series_name) # using os.path.join is a safe method for all OS.
 ```
 
-Suppose a DICOM file is named `1234.dcm` and the program read it and returns the `info = {'pname':'Jackson', 'pid':'111111', 'date':20211202, 'series_description':'arterial'}`. The function above will return `'111111_Jackson/20211202/arterial'`. Finally the file will be move to `'./111111_Jackson/20211202/arterial/1234.dcm'`.
+Suppose a DICOM file is named `1234.dcm` and the program read it and returns the `info = {'PatientName':'Jackson', 'PatientID':'111111', 'StudyDate':20211202, 'SeriesDescription':'arterial'}`. The function above will return `'111111_Jackson/20211202/arterial'`. Finally the file will be move to `'./111111_Jackson/20211202/arterial/1234.dcm'`.
 
 ### Set the arguments
 
@@ -68,15 +92,19 @@ we need to tell the program where is the root folder and where we want to move t
 {
     "in_dir": "C:\\Users\\J\\Desktop\\mess",
     "out_dir": "C:\\Users\\J\\Desktop\\clean",
-    "fast": false
+    "copy_or_cut": "copy", 
+    "custom_file":"custom", 
+    "batch_size":2000
 }
 ```
 
-If `fast` is `true`, it means the dicom files are all located in the leaf nodes of `in_dir` directory tree and all files in the last branch are of the same `SeriesInstanceUID`.  While tidying up, the program will only read the first file and the whole folder will be move to the new place.
+The `in_dir` is the root folder of your unsorted DICOM files. The `out_dir` is the root folder of your sorted DICOM files. `copy_or_cut` defines the method when moving the files, by either `shutil.copy` or `shutil.move`. `custom_file` is the filename of the custom.py. You can write different custom files (e.g., 'custom_a' for 'custom_a.py', 'custom_b' for 'custom_b.py) to handle different DICOMs. `batch_size` is the number of files processed in one batch.
 
 ### Run
 
 Run the `main.py` and the program will start to work.
+The terminal will display the process bar batch by batch.
+When any error occurs, a 'failures.csv' will be stored in `out_dir` logging the filepath and error information.
 
 ## Embeddable Version
 
