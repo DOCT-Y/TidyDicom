@@ -24,7 +24,7 @@ The below modules must be installed first to make the TidyDicom work.
 ## Quick Start
 
 <p align="center">
-  <img src="https://github.com/DOCT-Y/TidyDicom/blob/main/overview.png" width="600" height="300">
+  <img src="https://github.com/DOCT-Y/TidyDicom/blob/main/overview.png" width="600" height="600">
 </p>
 
 Suppose that we have a root folder full of DICOM files and we need to categorize these DICOM files into specific folders. For example, if we want the first layer of the directory tree to be the patient's name and patient's ID, the second layer to be the study date, and the second layer to be the series description. DICOM files with the same patient's name, patient's ID, study date, and series description will go to the same folder.
