@@ -98,7 +98,7 @@ we need to tell the program where is the root folder and where we want to move t
 }
 ```
 
-The `in_dir` is the root folder of your unsorted DICOM files. The `out_dir` is the root folder of your sorted DICOM files. `copy_or_cut` defines the method when moving the files, by either `shutil.copy` or `shutil.move`. `custom_file` is the filename of the custom.py. You can write different custom files (e.g., 'custom_a' for 'custom_a.py', 'custom_b' for 'custom_b.py) to handle different DICOMs. `batch_size` is the number of files processed in one batch.
+The `in_dir` is the root folder of your unsorted DICOM files. The `out_dir` is the root folder of your sorted DICOM files. `copy_or_cut` defines the method when moving the files, by either `shutil.copy` or `shutil.move`. `custom_file` is the filename of the custom.py. You can write different custom files (e.g., `custom_a` for `custom_a.py`, `custom_b` for `custom_b.py`) to handle different DICOMs. `batch_size` is the number of files processed in one batch.
 
 ### Run
 
@@ -106,7 +106,7 @@ Run the `main.py` and the program will start to work.
 
 The terminal will display the process bar batch by batch.
 
-When any error occurs, a 'failures.csv' will be stored in `out_dir` logging the filepath and error information.
+When any error occurs, a `failures.csv` will be stored in `out_dir` logging the filepath and error information.
 
 ## Embeddable Version
 
