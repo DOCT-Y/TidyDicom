@@ -57,7 +57,7 @@ class DicomTag:
     def get_value(self, ds):
         try:
             value = self.get_value_method(ds)
-        except KeyError:
+        except AttributeError:
             value = self.default_value
         
         return value
